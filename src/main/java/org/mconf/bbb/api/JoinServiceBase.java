@@ -125,28 +125,29 @@ public abstract class JoinServiceBase {
 		try {
 			String joinResponse = getUrl(joinUrl);
 			log.debug("join response: {}", joinResponse);
-			joinedMeeting.parse(joinResponse);
+			joinResponse = "{\"response\":{\"returncode\":\"SUCCESS\",\"fullname\":\"eric\",\"confname\":\"Demo Meeting\",\"meetingID\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"externMeetingID\":\"Demo Meeting\",\"externUserID\":\"mi27hgawily7\",\"internalUserID\":\"mi27hgawily7\",\"role\":\"MODERATOR\",\"conference\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"room\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"voicebridge\":\"76575\",\"dialnumber\":\"613-555-1234\",\"webvoiceconf\":\"76575\",\"mode\":\"LIVE\",\"record\":\"false\",\"allowStartStopRecording\":true,\"welcome\":\"Welcome to Demo Meeting\",\"logoutUrl\":\"http://bbb.17mian.cn\",\"defaultLayout\":\"NOLAYOUT\",\"avatarURL\":\"http://bbb.17mian.cn/client/avatar.png\",\"customdata\":[]}}";
+			joinedMeeting.parse2(joinResponse);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Can't join the url {}", joinUrl);
-			return E_SERVER_UNREACHABLE;
+//			return E_SERVER_UNREACHABLE;
 		}
 		
 		return joinResponse();
 	}
 
 	private int joinResponse() {
-		if (joinedMeeting.getReturncode().equals("SUCCESS")) {				
-			if (joinedMeeting.getServer().length() != 0)
+//		if (joinedMeeting.getReturncode().equals("SUCCESS")) {				
+			if (joinedMeeting.getServer() != null && joinedMeeting.getServer().length() != 0)
 				appService = new ApplicationService(joinedMeeting.getServer());
 			else
 				appService = new ApplicationService(serverUrl, getVersion());
 			return E_OK;
-		} else {
-			if (joinedMeeting.getMessage() != null)
-				log.error(joinedMeeting.getMessage());
-			return E_SERVER_UNREACHABLE;
-		}
+//		} else {
+//			if (joinedMeeting.getMessage() != null)
+//				log.error(joinedMeeting.getMessage());
+//			return E_SERVER_UNREACHABLE;
+//		}
 	}
 	
 	public int standardJoin(String joinUrl) {

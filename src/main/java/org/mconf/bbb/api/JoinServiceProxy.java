@@ -39,6 +39,8 @@ public class JoinServiceProxy {
 				joinService = new JoinService0Dot7();
 			else if (serverVersion.equals(new JoinService0Dot8().getVersion()))
 				joinService = new JoinService0Dot8();
+			else if (serverVersion.equals(new JoinService0Dot9().getVersion()))
+				joinService = new JoinService0Dot9();
 			else
 				log.debug("Unknown server version {}", serverVersion);
 			
@@ -51,8 +53,8 @@ public class JoinServiceProxy {
 		setServer(serverUrl);
 		
 		if (joinService != null
-				&& joinService.getClass() == JoinService0Dot8.class)
-			((JoinService0Dot8) joinService).setSalt(salt);
+				&& joinService.getClass() == JoinService0Dot9.class)
+			((JoinService0Dot9) joinService).setSalt(salt);
 	}
 	
 	public JoinServiceBase getJoinService() {

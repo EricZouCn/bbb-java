@@ -29,6 +29,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -105,6 +107,33 @@ public class JoinedMeeting {
 		}
 	}
 
+	public void parse2(String str) throws UnsupportedEncodingException, SAXException, IOException, ParserConfigurationException, JSONException {	
+		JSONObject json = new JSONObject(str);
+		JSONObject obj = json.getJSONObject("response");
+		
+		returncode = obj.getString("returncode");
+		
+		if (returncode.equals("SUCCESS")) {		
+			fullname = obj.getString("fullname");
+			confname = obj.getString("confname");
+			meetingID = obj.getString("meetingID");
+			externUserID = obj.getString("externUserID");
+			internalUserID = obj.getString("internalUserID");
+			role = obj.getString("role");
+			conference = obj.getString("conference");
+			room = obj.getString("room");
+			voicebridge = obj.getString("voicebridge");
+			webvoiceconf = obj.getString("webvoiceconf");
+			mode = obj.getString("mode");
+			record = obj.getString("record");
+			welcome = obj.getString("welcome");
+			server = ""; //obj.getString("server");
+			guest = ""; //obj.getString("guest");
+		} else {
+			message = obj.getString("message");
+		}
+	}
+
 	public String getReturncode() {
 		return returncode;
 	}
@@ -166,11 +195,11 @@ public class JoinedMeeting {
 	}
 
 	public boolean isGuestDefined() {
-		return guest.length() > 0;
+		return guest == null ? false : guest.length() > 0;
 	}
 	
 	public boolean isGuest() {
-		return guest.equalsIgnoreCase("true");
+		return "true".equalsIgnoreCase(guest);
 	}
 
 	@Override

@@ -122,18 +122,25 @@ public class MainRtmpConnection extends RtmpConnection {
 		List<Object> args = new ArrayList<Object>();
 		args.add(meeting.getFullname());
 		args.add(meeting.getRole());
-		args.add(meeting.getConference());
-		if (context.getJoinService().getApplicationService().getVersion().equals(ApplicationService.VERSION_0_7))
-			args.add(meeting.getMode());
+//		args.add(meeting.getConference());
+//		if (context.getJoinService().getApplicationService().getVersion().equals(ApplicationService.VERSION_0_7))
+//			args.add(meeting.getMode());
 		args.add(meeting.getRoom());
 		args.add(meeting.getVoicebridge());
-		args.add(meeting.doRecord());
+		args.add(false); //meeting.doRecord()
 		args.add(meeting.getExternUserID());
 		args.add(meeting.getInternalUserID());
-		if (meeting.isGuestDefined())
-			args.add(meeting.isGuest());
+//		if (meeting.isGuestDefined())
+//			args.add(meeting.isGuest());
+		
+		// stub codes
+		args.add(false); //locked
+		args.add(false); //muted
+		args.add(false); //lsMap
+		// stub codes end
 		
 		options.setArgs(args.toArray());
+		options.setPort(80);
 		
 		writeCommandExpectingResult(e.getChannel(), Command.connect(options));
 	}
@@ -159,6 +166,11 @@ public class MainRtmpConnection extends RtmpConnection {
     	writeCommandExpectingResult(channel, command);
     }
     
+    public void doJoinMeeting(Channel channel) {
+    	Command command = new CommandAmf0("joinMeeting", null, context.getJoinService().getJoinedMeeting().getInternalUserID());
+    	writeCommandExpectingResult(channel, command);
+    }
+    
     public boolean onGetMyUserId(String resultFor, Command command) {
     	if (resultFor.equals("getMyUserId")) {
 	    	context.setMyUserId((String) command.getArg(0));
@@ -168,6 +180,19 @@ public class MainRtmpConnection extends RtmpConnection {
 				l.onConnectedSuccessfully();
 			
 	    	return true;
+    	} else
+    		return false;
+    }
+    
+    public boolean onJoinMeeting(String resultFor, Command command) {
+    	if (resultFor.equals("joinMeeting")) {
+    		context.setMyUserId(context.getJoinService().getJoinedMeeting().getInternalUserID());
+    		
+    		connected = true;
+    		for (OnConnectedListener l : context.getConnectedListeners())
+    			l.onConnectedSuccessfully();
+    		
+    		return true;
     	} else
     		return false;
     }
@@ -203,7 +228,8 @@ public class MainRtmpConnection extends RtmpConnection {
 	                if(resultFor.equals("connect")) {
 	                	String code = connectGetCode(command);
 	                	if (code.equals("NetConnection.Connect.Success"))
-	                		doGetMyUserId(channel);
+//	                		doGetMyUserId(channel);
+	                		doJoinMeeting(channel);
 	                	else {
 	                		log.error("method connect result in {}, quitting", code);
 	                		log.debug("connect response: {}", command.toString());
@@ -213,9 +239,17 @@ public class MainRtmpConnection extends RtmpConnection {
 	                } else if (onGetMyUserId(resultFor, command)) {
 	                	context.createUsersModule(this, channel);
 	                	break;
+	                } else if (onJoinMeeting(resultFor, command)) {
+	                	context.createUsersModule(this, channel);
+	                	break;
 	                } 
 	                context.onCommand(resultFor, command);
                 	break;
+	            } else if ("onMessageFromServer".equals(name)) {
+	            	String arg0 = (String) command.getArg(0);
+	            	if("getUsersReply".equals(arg0)) {
+	            		context.getUsersModule().onQueryParticipants(arg0, command);
+	            	}
 	            }
 	            break;
 	            

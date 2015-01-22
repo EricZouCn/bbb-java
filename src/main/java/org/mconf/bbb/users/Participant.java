@@ -23,6 +23,9 @@ package org.mconf.bbb.users;
 
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Participant implements IParticipant {
 
 	private Status status;
@@ -44,6 +47,10 @@ public class Participant implements IParticipant {
 		decode(param, appServerVersion);
 	}
 	
+	public Participant(JSONObject param, String appServerVersion) {
+		decode(param, appServerVersion);
+	}
+	
 	/*
 	 * example:
 	 * {status={raiseHand=false, hasStream=false, presenter=false}, name=Eclipse, userid=112.0, role=VIEWER}
@@ -56,6 +63,17 @@ public class Participant implements IParticipant {
 		role = (String) param.get("role");
 	}
 
+	public void decode(JSONObject param, String appServerVersion) {
+		try {
+			status = new Status(param, appServerVersion);
+			name = param.getString("name");
+			userid = UsersModule.getUserIdFromObject(param.getString("userId"));
+			role = param.getString("role");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.mconf.bbb.users.IParticipant#getStatus()
 	 */

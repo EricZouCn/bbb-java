@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jboss.netty.channel.Channel;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mconf.bbb.BigBlueButtonClient.OnKickUserListener;
 import org.mconf.bbb.BigBlueButtonClient.OnParticipantJoinedListener;
 import org.mconf.bbb.BigBlueButtonClient.OnParticipantLeftListener;
@@ -190,16 +193,61 @@ public class UsersModule extends Module implements ISharedObjectListener {
 
 			participants.clear();
 
+			return parseParticipants(args);
+		} else if ("getUsersReply".equals(resultFor)) {
+			Map<String, String> args = (Map<String, String>) command.getArg(1);
+			
+			participants.clear();
+			
+			JSONObject json;
+			try {
+				for(String ite:args.values()){
+					json = new JSONObject(ite);
+					
+					parseParticipants2(json);
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private boolean parseParticipants(Map<String, Object> args) {
+		try {
 			@SuppressWarnings("unused")
 			int count = ((Double) args.get("count")).intValue();
-
+			
 			Map<String, Object> participantsMap = (Map<String, Object>) args.get("participants");
-
+			
 			for (Map.Entry<String, Object> entry : participantsMap.entrySet()) {
 				Participant p = new Participant((Map<String, Object>) entry.getValue(), joinServiceVersion);
 				onParticipantJoined(p);
 			}
 			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	private boolean parseParticipants2(JSONObject args) {
+		try {
+			@SuppressWarnings("unused")
+			int count = args.getInt("count");
+			
+			JSONArray participantsMap = args.getJSONArray("users");
+			
+			for (int i = 0 ; i < participantsMap.length(); i++) {
+				JSONObject entry = participantsMap.getJSONObject(i);
+				Participant p = new Participant(entry, joinServiceVersion);
+				onParticipantJoined(p);
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return false;
 	}

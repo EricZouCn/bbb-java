@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.mconf.bbb.api.ApplicationService;
 
 public class Status {
@@ -35,6 +37,11 @@ public class Status {
 	private List<String> streamNameList;
 	
 	public Status(Map<String, Object> param, String appServerVersion) {
+		streamNameList = new ArrayList<String>();
+		decode(param, appServerVersion);
+	}
+	
+	public Status(JSONObject param, String appServerVersion) {
 		streamNameList = new ArrayList<String>();
 		decode(param, appServerVersion);
 	}
@@ -57,6 +64,20 @@ public class Status {
 		presenter = (Boolean) param.get("presenter");
 	}
 
+	public void decode(JSONObject param, String appServerVersion) {
+		try {
+			raiseHand = param.getBoolean("raiseHand");
+			setHasStream(param.getBoolean("hasStream"));
+			if (appServerVersion.equals(ApplicationService.VERSION_0_7)) {
+				String name = hasStream? param.getString("webcamStream") : "";
+				setStreamName(name);
+			}
+			presenter = (Boolean) param.getBoolean("presenter");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public boolean isRaiseHand() {
 		return raiseHand;
 	}
