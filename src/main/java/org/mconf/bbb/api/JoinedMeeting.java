@@ -87,8 +87,8 @@ public class JoinedMeeting {
 		returncode = ParserUtils.getNodeValue(nodeResponse, "returncode");
 		
 		if (returncode.equals("SUCCESS")) {		
-			fullname = ParserUtils.getNodeValue(nodeResponse, "fullname");
-			confname = ParserUtils.getNodeValue(nodeResponse, "confname");
+			fullname = ParserUtils.getNodeValue(nodeResponse, "meetingName");
+			confname = ParserUtils.getNodeValue(nodeResponse, "meetingName");
 			meetingID = ParserUtils.getNodeValue(nodeResponse, "meetingID");
 			externUserID = ParserUtils.getNodeValue(nodeResponse, "externUserID");
 			internalUserID = ParserUtils.getNodeValue(nodeResponse, "internalUserID");

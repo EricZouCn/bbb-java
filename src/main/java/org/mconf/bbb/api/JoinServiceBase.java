@@ -64,6 +64,10 @@ public abstract class JoinServiceBase {
 		return serverUrl + ":" + serverPort;
 	}
 	
+	protected String getMeetingInfoUrl(Meeting meeting) {
+		return "";
+	}
+	
 	public int createMeeting(String meetingID) {
 		String createUrl = getFullDemoPath() + getCreateMeetingUrl(meetingID);
 		log.debug("create URL: {}", createUrl);
@@ -117,7 +121,9 @@ public abstract class JoinServiceBase {
 	}
 
 	public int join(Meeting meeting, String name, boolean moderator) {  
-		return join(getFullDemoPath() + getJoinUrl(meeting, name, moderator));
+//		return join(getFullDemoPath() + getJoinUrl(meeting, name, moderator)); // original code
+		return standardJoin(getFullDemoPath() + getJoinUrl(meeting, name, moderator)); // original code
+//		return join(getFullDemoPath() + getMeetingInfoUrl(meeting)); // code added by eric 2015.1.23 getMeetingInfo返回的数据中不包含UUID形式的meetingID，此方法不行
 	}
 	
 	private int join(String joinUrl) { //.
@@ -125,8 +131,8 @@ public abstract class JoinServiceBase {
 		try {
 			String joinResponse = getUrl(joinUrl);
 			log.debug("join response: {}", joinResponse);
-			joinResponse = "{\"response\":{\"returncode\":\"SUCCESS\",\"fullname\":\"eric\",\"confname\":\"Demo Meeting\",\"meetingID\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"externMeetingID\":\"Demo Meeting\",\"externUserID\":\"mi27hgawily7\",\"internalUserID\":\"mi27hgawily7\",\"role\":\"MODERATOR\",\"conference\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"room\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421882301605\",\"voicebridge\":\"76575\",\"dialnumber\":\"613-555-1234\",\"webvoiceconf\":\"76575\",\"mode\":\"LIVE\",\"record\":\"false\",\"allowStartStopRecording\":true,\"welcome\":\"Welcome to Demo Meeting\",\"logoutUrl\":\"http://bbb.17mian.cn\",\"defaultLayout\":\"NOLAYOUT\",\"avatarURL\":\"http://bbb.17mian.cn/client/avatar.png\",\"customdata\":[]}}";
-			joinedMeeting.parse2(joinResponse);
+//			joinResponse = "{\"response\":{\"returncode\":\"SUCCESS\",\"fullname\":\"eric\",\"confname\":\"Demo Meeting\",\"meetingID\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421965938266\",\"externMeetingID\":\"Demo Meeting\",\"externUserID\":\"mi27hgawily7\",\"internalUserID\":\"mi27hgawily7\",\"role\":\"MODERATOR\",\"conference\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421965938266\",\"room\":\"183f0bf3a0982a127bdb8161e0c44eb696b3e75c-1421965938266\",\"voicebridge\":\"74112\",\"dialnumber\":\"613-555-1234\",\"webvoiceconf\":\"74112\",\"mode\":\"LIVE\",\"record\":\"false\",\"allowStartStopRecording\":true,\"welcome\":\"Welcome to Demo Meeting\",\"logoutUrl\":\"http://bbb.17mian.cn\",\"defaultLayout\":\"NOLAYOUT\",\"avatarURL\":\"http://bbb.17mian.cn/client/avatar.png\",\"customdata\":[]}}";
+			joinedMeeting.parse(joinResponse);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Can't join the url {}", joinUrl);
@@ -174,7 +180,7 @@ public abstract class JoinServiceBase {
 	        // have to modify the answer of the api/enter in case when the join
 	        // message is answered by another host (proxy)
 			String enterResponse = getUrl(client, enterUrl).replace("</response>", "<server>" + currentHost.toURI() + "</server></response>");
-			joinedMeeting.parse(enterResponse);
+			joinedMeeting.parse2(enterResponse);
 		} catch (Exception e) {
 			e.printStackTrace();
 			log.error("Can't join the url {}", joinUrl);

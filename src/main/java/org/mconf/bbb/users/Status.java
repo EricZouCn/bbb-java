@@ -68,10 +68,10 @@ public class Status {
 		try {
 			raiseHand = param.getBoolean("raiseHand");
 			setHasStream(param.getBoolean("hasStream"));
-			if (appServerVersion.equals(ApplicationService.VERSION_0_7)) {
+//			if (appServerVersion.equals(ApplicationService.VERSION_0_7)) {
 				String name = hasStream? param.getString("webcamStream") : "";
 				setStreamName(name);
-			}
+//			}
 			presenter = (Boolean) param.getBoolean("presenter");
 		} catch (JSONException e) {
 			e.printStackTrace();

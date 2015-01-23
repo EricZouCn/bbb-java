@@ -192,6 +192,8 @@ public class UsersModule extends Module implements ISharedObjectListener {
 			Map<String, Object> args = (Map<String, Object>) command.getArg(0);
 
 			participants.clear();
+			handler.getContext().createChatModule(handler, channel);
+			handler.getContext().createListenersModule(handler, channel);
 
 			return parseParticipants(args);
 		} else if ("getUsersReply".equals(resultFor)) {
@@ -210,6 +212,8 @@ public class UsersModule extends Module implements ISharedObjectListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			handler.getContext().createChatModule(handler, channel);
+			handler.getContext().createListenersModule(handler, channel);
 			return true;
 		}
 		return false;
@@ -217,14 +221,16 @@ public class UsersModule extends Module implements ISharedObjectListener {
 
 	private boolean parseParticipants(Map<String, Object> args) {
 		try {
-			@SuppressWarnings("unused")
-			int count = ((Double) args.get("count")).intValue();
-			
-			Map<String, Object> participantsMap = (Map<String, Object>) args.get("participants");
-			
-			for (Map.Entry<String, Object> entry : participantsMap.entrySet()) {
-				Participant p = new Participant((Map<String, Object>) entry.getValue(), joinServiceVersion);
-				onParticipantJoined(p);
+			if(args != null && args.get("count") != null) {
+				@SuppressWarnings("unused")
+				int count = ((Double) args.get("count")).intValue();
+				
+				Map<String, Object> participantsMap = (Map<String, Object>) args.get("participants");
+				
+				for (Map.Entry<String, Object> entry : participantsMap.entrySet()) {
+					Participant p = new Participant((Map<String, Object>) entry.getValue(), joinServiceVersion);
+					onParticipantJoined(p);
+				}
 			}
 			return true;
 		} catch (Exception e) {

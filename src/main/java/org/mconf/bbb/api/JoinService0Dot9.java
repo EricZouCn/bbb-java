@@ -62,6 +62,13 @@ public class JoinService0Dot9 extends JoinServiceBase {
 	}
 	
 	@Override
+	protected String getMeetingInfoUrl(Meeting meeting) {
+		String parameters = "meetingID=" + urlEncode(meeting.getMeetingID())
+				+ "&password=" + meeting.getModeratorPW();
+		return "getMeetingInfo?" + parameters + "&checksum=" + checksum("getMeetingInfo" + parameters + salt);
+	}
+	
+	@Override
 	public int join(String meetingID, String name, boolean moderator) { //.
 		int code = updateTimestamp();
 		if (code != E_OK)

@@ -194,8 +194,8 @@ public class BigBlueButtonClient {
 
 	public boolean onCommand(String resultFor, Command command) {
 		if (usersModule.onCommand(resultFor, command)
-				|| chatModule.onCommand(resultFor, command)
-				|| listenersModule.onCommand(resultFor, command))
+				|| (chatModule != null && chatModule.onCommand(resultFor, command))
+				|| (listenersModule != null && listenersModule.onCommand(resultFor, command)))
 			return true;
 		else
 			return false;

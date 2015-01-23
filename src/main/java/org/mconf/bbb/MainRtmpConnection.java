@@ -247,6 +247,8 @@ public class MainRtmpConnection extends RtmpConnection {
                 	break;
 	            } else if ("onMessageFromServer".equals(name)) {
 	            	String arg0 = (String) command.getArg(0);
+		            log.debug("onMessageFromServer command: {}:{}", arg0, command);
+
 	            	if("getUsersReply".equals(arg0)) {
 	            		context.getUsersModule().onQueryParticipants(arg0, command);
 	            	}
