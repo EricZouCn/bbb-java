@@ -67,7 +67,9 @@ public abstract class VideoReceiverConnection extends RtmpConnection {
 	
 	@Override
 	public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) {
-        options.setArgs((Object[]) null);
+		Object[] args = new Object[]{context.getJoinService().getJoinedMeeting().getMeetingID(), 
+				context.getJoinService().getJoinedMeeting().getInternalUserID()};
+        options.setArgs(args);
         writeCommandExpectingResult(e.getChannel(), Command.connect(options));
 	}
 	

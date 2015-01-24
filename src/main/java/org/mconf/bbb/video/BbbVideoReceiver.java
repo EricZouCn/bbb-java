@@ -78,6 +78,7 @@ public class BbbVideoReceiver {
 		
 		opt.setWriterToSave(null);
 		opt.setStreamName(streamName);
+//		opt.setAppName(opt.getAppName() + "/" + streamName);
 		
 		videoConnection = new VideoConnection(opt, context);
 	}

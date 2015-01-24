@@ -192,8 +192,8 @@ public class UsersModule extends Module implements ISharedObjectListener {
 			Map<String, Object> args = (Map<String, Object>) command.getArg(0);
 
 			participants.clear();
-			handler.getContext().createChatModule(handler, channel);
-			handler.getContext().createListenersModule(handler, channel);
+//			handler.getContext().createChatModule(handler, channel);
+//			handler.getContext().createListenersModule(handler, channel);
 
 			return parseParticipants(args);
 		} else if ("getUsersReply".equals(resultFor)) {
@@ -212,8 +212,8 @@ public class UsersModule extends Module implements ISharedObjectListener {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			handler.getContext().createChatModule(handler, channel);
-			handler.getContext().createListenersModule(handler, channel);
+//			handler.getContext().createChatModule(handler, channel);
+//			handler.getContext().createListenersModule(handler, channel);
 			return true;
 		}
 		return false;
