@@ -122,6 +122,7 @@ public abstract class JoinServiceBase {
 
 	public int join(Meeting meeting, String name, boolean moderator) {  
 //		return join(getFullDemoPath() + getJoinUrl(meeting, name, moderator)); // original code
+		String createUrl = getFullDemoPath() + getCreateMeetingUrl(meeting.getMeetingID());
 		return standardJoin(getFullDemoPath() + getJoinUrl(meeting, name, moderator)); // original code
 //		return join(getFullDemoPath() + getMeetingInfoUrl(meeting)); // code added by eric 2015.1.23 getMeetingInfo返回的数据中不包含UUID形式的meetingID，此方法不行
 	}
